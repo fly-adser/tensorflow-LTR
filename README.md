@@ -1,23 +1,18 @@
 # tensorflow-LTR
 
-Ongoing projects for implementing various Learning to Rank (LTR) models.
+## Introduction
+This project is copied from the github of Chenglongchen, and my purpose is to learning more details of LTR by the implemention for various models. Base on what has been finished, I will implement more models. 
 
-- pointwise
-    - classification
-        - DNN
-        - LR
-- pairwise
-    - RankNet
-    - LambdaRank
-- listwise
-    - ListNet (TODO)
+## Models for LTR
+- point-wise  
+  - LR 
+  - DNN 
 
-# References
-[1] Hang Li, *A Short Introduction to Learning to Rank*
+- pair-wise
+  - RankNet
+  - LambdaRank
 
-[2] Christopher J.C. Burges, *From RankNet to LambdaRank to LambdaMART: An Overview*
-
-# Acknowledgments
-This project gets inspirations from the following projects:
-- [learning-rank-public](https://github.com/andreweskeclarke/learning-rank-public)
-- [learning2rank](https://github.com/shiba24/learning2rank)
+## Referances
+[1].ICML2005, Microsoft. *Learning to Rank using Gradient Descent*  
+[2].Report2010, MSRA. *From RankNet to LambdaRank to LambdaMART-An overview*  
+[3].Fly Adser. *[LTR预估：从慕名而来到一探深浅](https://fly-adser.top/2021/12/30/LTRpartA/)*
