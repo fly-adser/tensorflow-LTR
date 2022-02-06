@@ -16,7 +16,7 @@ class BaseRankModel(object):
         self.model_name = model_name
         self.params = params
         self.logger = logger
-        utils._makedirs(self.params["offline_model_dir"], force=training)
+        utils._makedirs(self.params[" "], force=training)
 
         self._init_tf_vars()
         self.loss, self.num_pairs, self.score, self.train_op = self._build_model()
@@ -274,7 +274,7 @@ class DNN(BaseRankModel):
 
     def _build_model(self):
         # score
-        score = logits = self._score_fn(self.feature)
+        score = self._score_fn_inner(self.feature)
 
         logloss = tf.nn.sigmoid_cross_entropy_with_logits(logits=logits, labels=self.label)
         loss = tf.reduce_mean(logloss)
@@ -458,3 +458,33 @@ class ListNet(BaseRankModel):
 
     def __init__(self, model_name, params, logger, training=True):
         super(ListNet, self).__init__(model_name, params, logger, training)
+
+    def _build_model(self):
+        if self.params["factorization"]:
+            return self._build_factorized_model()
+        else:
+            return self._build_unfactorized_model()
+
+    def _build_unfactorized_model(self):
+        # score
+        score = self._score_fn(self.feature)
+
+        qid_unique = np.unique(self.qid)
+        n = len(qid_unique)
+        losses = np.zeros(n)
+
+        for e, qid in enumerate(qid_unique):
+            ind   = np.where(self.qid == qid)[0]
+            df    = pd.DataFrame({"label": self.label[ind].flatten(), "score": score[ind].flatten()})
+            df.sort_values("label", ascending=False, inplace=True)
+            p_true, p_pred = 1.0, 1.0
+            s     = len(df)
+            for i in range(0, s):
+                p_true *= ((df["label"][i] + 0.001) / (sum(df["label"][i:]) + 0.001))
+                p_pred *= ((df["score"][i] + 0.001) / (sum(df["score"][i:]) + 0.001))
+
+        losses[e] = tf.keras.losses.KLD(p_true, p_pred)
+
+        loss = np.mean(losses)
+
+        return loss

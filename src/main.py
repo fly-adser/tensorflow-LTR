@@ -124,6 +124,26 @@ def train_lambdarank():
     model.fit(X_train, validation_data=X_valid)
     model.save_session()
 
+def train_listnet():
+    params = {
+        "offline_model_dir": "../weights/ranknet",
+
+        # deep part score fn
+        "fc_type": "fc",
+        "fc_dim": 32,
+        "fc_dropout": 0.,
+
+        # ranknet param
+        "factorization": False,
+        "sigma": 1.,
+    }
+    params.update(params_common)
+
+    X_train, X_valid = load_data("train"), load_data("vali")
+
+    model = RankNet("ranking", params, logger)
+    model.fit(X_train, validation_data=X_valid)
+    model.save_session()
 
 def main():
     if len(sys.argv) > 1:
@@ -135,6 +155,8 @@ def main():
             train_ranknet()
         elif sys.argv[1] == "lambdarank":
             train_lambdarank()
+        elif sys.argv[1] == "listnet":
+            train_listnet()
     else:
         train_lr()
 
