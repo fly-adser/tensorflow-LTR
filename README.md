@@ -12,6 +12,9 @@ This project is copied from the github of Chenglongchen, and my purpose is to le
   - RankNet
   - LambdaRank
 
+- list-wise
+  - ListNet  
+
 ## Referances
 [1].ICML2005, Microsoft. *Learning to Rank using Gradient Descent*  
 [2].Report2010, MSRA. *From RankNet to LambdaRank to LambdaMART-An overview*  
