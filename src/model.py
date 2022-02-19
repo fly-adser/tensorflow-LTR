@@ -471,7 +471,7 @@ class ListNet(BaseRankModel):
 
         qid_unique = np.unique(self.qid)
         n = len(qid_unique)
-        losses = np.zeros(n)
+        truth, preds = [], []
 
         for e, qid in enumerate(qid_unique):
             ind   = np.where(self.qid == qid)[0]
@@ -483,8 +483,9 @@ class ListNet(BaseRankModel):
                 p_true *= ((df["label"][i] + 0.001) / (sum(df["label"][i:]) + 0.001))
                 p_pred *= ((df["score"][i] + 0.001) / (sum(df["score"][i:]) + 0.001))
 
-        losses[e] = tf.keras.losses.KLD(p_true, p_pred)
+            truth.append(p_true)
+            preds.append(p_pred)
 
-        loss = np.mean(losses)
+        loss = tf.keras.losses.KLD(truth, preds)
 
         return loss
